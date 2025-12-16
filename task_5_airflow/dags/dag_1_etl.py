@@ -13,8 +13,6 @@ from airflow.utils.task_group import TaskGroup
 from airflow.datasets import Dataset
 from airflow.models import Variable
 
-# --- ИМПОРТ ИЗ ВАШЕГО НОВОГО МОДУЛЯ ---
-# Airflow автоматически добавляет dags/ в PYTHONPATH, поэтому можно импортировать 'utils'
 from utils.data_processing import (
     check_file_empty,
     load_csv_and_save,
@@ -28,23 +26,11 @@ from utils.data_processing import (
 # CONFIGURATION & CONSTANTS
 # ============================================================================
 
-# File paths (configurable)
-# Prefer environment variable `DATA_DIR`, then Airflow Variable `DATA_DIR`.
-# Default is the container path `/opt/airflow/data` (used when running in Docker).
 DATA_DIR = os.environ.get("DATA_DIR") or Variable.get("DATA_DIR", default_var="/opt/airflow/data")
 CSV_FILE = os.path.join(DATA_DIR, "tiktok_google_play_reviews.csv")
 
 MONGO_CONN_ID = "mongodb_tiktok"
 
-# MongoDB configuration
-# MONGO_HOST = "mongo"  # service name from docker-compose
-# MONGO_PORT = 27017
-# MONGO_USER = "root"
-# MONGO_PASSWORD = "example"
-# MONGO_DB = "tiktok_reviews"
-# MONGO_COLLECTION = "reviews"
-
-# Dataset for inter-DAG communication
 dataset_update = Dataset(f"file://{CSV_FILE}")
 
 # Logging
@@ -78,8 +64,8 @@ dag = DAG(
 wait_for_file = FileSensor(
     task_id="wait_for_file",
     filepath=CSV_FILE,
-    poke_interval=5,  # Check every 5 seconds
-    timeout=60,  # Timeout after 5 minutes
+    poke_interval=5,  
+    timeout=60, 
     dag=dag,
 )
 
@@ -126,7 +112,6 @@ with TaskGroup("processing_group", dag=dag) as processing_group:
     load_mongo_task = PythonOperator(
         task_id="load_mongodb",
         python_callable=load_to_mongodb,
-        # ПЕРЕДАЕМ ID СОЕДИНЕНИЯ В ФУНКЦИЮ load_to_mongodb
         op_kwargs={'mongo_conn_id': MONGO_CONN_ID}, 
         dag=dag,
     )

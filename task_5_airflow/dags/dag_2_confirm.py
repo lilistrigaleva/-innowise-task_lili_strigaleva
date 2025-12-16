@@ -19,16 +19,7 @@ from utils.data_processing import (
 # ============================================================================
 MONGO_CONN_ID = "mongodb_tiktok"
 
-# Dataset to listen for (must match DAG 1)
 dataset_trigger = Dataset("file:///opt/airflow/data/tiktok_google_play_reviews.csv")
-
-# MongoDB configuration
-# MONGO_HOST = "mongo"
-# MONGO_PORT = 27017
-# MONGO_USER = "root"
-# MONGO_PASSWORD = "example"
-# MONGO_DB = "tiktok_reviews"
-# MONGO_COLLECTION = "reviews"
 
 # Logging
 logger = logging.getLogger(__name__)
