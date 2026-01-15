@@ -1,0 +1,6 @@
+pandas
+pymongo
+snowflake-connector-python
+apache-airflow-providers-snowflake
+apache-airflow-providers-common-sql
+
